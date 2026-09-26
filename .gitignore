@@ -1,0 +1,10 @@
+# Keep secrets private
+.env
+
+# Ignore virtual environment and cache
+venv/
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd

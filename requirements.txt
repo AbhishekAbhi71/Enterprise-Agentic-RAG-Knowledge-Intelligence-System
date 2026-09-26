@@ -1,0 +1,40 @@
+# Core LangChain and LangGraph
+langchain
+langchain-core
+langchain-community
+langchain-text-splitters
+langgraph
+langchain-experimental
+langchain-huggingface
+langchain-pdf
+
+
+# Vector database and retrieval
+langchain-qdrant
+qdrant-client
+rank-bm25
+
+# Google Gemini
+langchain-google-genai
+
+# PDF processing
+pypdf
+
+# Hugging Face reranking and ML
+sentence-transformers
+torch
+
+# Backend and database
+sqlalchemy
+pg8000
+redis
+pydantic
+python-dotenv
+
+typing-extensions
+regex
+requests
+
+
+fastapi
+uvicorn
