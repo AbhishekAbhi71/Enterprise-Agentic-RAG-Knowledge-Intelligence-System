@@ -1,348 +1,624 @@
-# Enterprise Agentic RAG Knowledge Intelligence System
+# 🚀 Enterprise Agentic RAG Knowledge Intelligence System
 
-An enterprise-style Agentic RAG system that combines **LLM reasoning, LangGraph-based tool routing, hybrid document retrieval, reranking, PostgreSQL SQL querying, answer generation, and verification**.
+> **A full-stack AI-powered enterprise knowledge intelligence platform built with React.js and FastAPI, combining Agentic RAG, LangGraph, LangChain, Gemini, Qdrant, PostgreSQL, hybrid search, cross-encoder reranking, SQL reasoning, and answer verification.**
 
-The system can intelligently determine whether a user query requires information from unstructured documents, structured database data, or both.
+This project is designed as an **enterprise-style full-stack AI application** capable of answering questions from both **unstructured company documents** and **structured business databases**.
 
-## 🚀 Key Features
+The system intelligently determines whether a query requires:
 
-* 🤖 Agentic workflow using LangGraph
-* 🧠 Gemini LLM integration
-* 🔀 Intelligent query routing
-* 📄 PDF document ingestion
-* 🔎 Hybrid retrieval using:
-
-  * Dense vector search
-  * BM25 sparse retrieval
-* 🎯 Cross-encoder reranking
-* ✍️ LLM-based query rewriting
-* 🗄️ PostgreSQL database integration
-* 🔧 SQL generation and execution through an agent tool
-* 🔗 Hybrid document + SQL queries
-* 🛡️ Read-only SQL protection
-* ✅ Answer verification
-* 📚 Source/page-aware document evidence
-* ⚡ Qdrant vector database
-* 🚀 FastAPI backend
-* ⚛️ React frontend planned
+* 📄 Document-based retrieval
+* 🗄️ PostgreSQL database information
+* 🔗 Both document and database information
 
 ---
 
-## 🏗️ Architecture
+# 🌟 Full-Stack Architecture
+
+This project follows a modern **Frontend → API → Agent → Data Layer** architecture.
 
 ```text
-                         User Query
-                              │
-                              ▼
-                       ┌──────────────┐
-                       │   FastAPI    │
-                       │    Backend   │
-                       └──────┬───────┘
-                              │
-                              ▼
-                       ┌──────────────┐
-                       │  LangGraph   │
-                       │ Agent Router │
-                       └──────┬───────┘
-                              │
-                ┌─────────────┼─────────────┐
-                │             │             │
-                ▼             ▼             ▼
-          ┌──────────┐  ┌──────────┐  ┌───────────┐
-          │ RAG Tool │  │ SQL Tool │  │Hybrid Tool│
-          └────┬─────┘  └────┬─────┘  └─────┬─────┘
-               │             │              │
-               ▼             ▼              ▼
-        Query Rewrite   SQL Generation   Query Rewrite
-               │             │              │
-               ▼             ▼              ▼
-        Hybrid Search   PostgreSQL      Hybrid Search
-        ┌──────┴──────┐                  │
-        │             │                  ▼
-        ▼             ▼             Reranking
-     Qdrant         BM25                │
-        │             │                  │
-        └──────┬──────┘                  │
-               ▼                         │
-           Reranking ◄───────────────────┘
-               │
-               ▼
-        Evidence / SQL Results
-               │
-               ▼
-       ┌─────────────────┐
-       │ Answer Generator│
-       └────────┬────────┘
-                │
-                ▼
-          ┌───────────┐
-          │ Verifier  │
-          └─────┬─────┘
-                │
-                ▼
-         Final Answer
+                         ┌─────────────────────────┐
+                         │      React Frontend     │
+                         │                         │
+                         │  Chat Interface / UI    │
+                         └────────────┬────────────┘
+                                      │
+                                      │ REST API
+                                      ▼
+                         ┌─────────────────────────┐
+                         │     FastAPI Backend      │
+                         │                         │
+                         │  API Routes / Services  │
+                         └────────────┬────────────┘
+                                      │
+                                      ▼
+                         ┌─────────────────────────┐
+                         │      LangGraph Agent     │
+                         │                         │
+                         │     Query Analyzer      │
+                         └────────────┬────────────┘
+                                      │
+                    ┌─────────────────┼─────────────────┐
+                    │                 │                 │
+                    ▼                 ▼                 ▼
+             ┌────────────┐    ┌────────────┐    ┌────────────┐
+             │  RAG Tool  │    │  SQL Tool  │    │Hybrid Tool │
+             └─────┬──────┘    └─────┬──────┘    └─────┬──────┘
+                   │                 │                  │
+                   ▼                 ▼                  ▼
+             Query Rewrite      SQL Generation      Query Rewrite
+                   │                 │                  │
+                   ▼                 ▼                  ▼
+             Hybrid Search      PostgreSQL        Hybrid Search
+              ┌────┴────┐                            │
+              │         │                            ▼
+              ▼         ▼                       Reranking
+           Qdrant     BM25                          │
+              │         │                            │
+              └────┬────┘                            │
+                   ▼                                 │
+              Reranking ◄────────────────────────────┘
+                   │
+                   ▼
+             Evidence / SQL Results
+                   │
+                   ▼
+           ┌─────────────────┐
+           │ Answer Generator│
+           └────────┬────────┘
+                    │
+                    ▼
+              ┌───────────┐
+              │  Verifier │
+              └─────┬─────┘
+                    │
+                    ▼
+             Final Answer
+                    │
+                    ▼
+              React Frontend
 ```
 
 ---
 
-## 🧠 Query Routing
+# 🧩 Full-Stack Components
 
-The system uses an LLM-powered router to select exactly one tool.
+## 🎨 Frontend — React.js
 
-### 1. RAG Route
+The frontend is built using **React.js** and provides the user-facing interface for interacting with the AI knowledge system.
 
-Used when the answer requires information from company documents or policies.
+The React frontend communicates with the backend through REST APIs exposed by FastAPI.
 
-Example:
+### Frontend responsibilities
+
+* 💬 Chat/query interface
+* 📤 Send user questions to the backend
+* 📥 Display AI-generated answers
+* 📚 Display retrieved evidence and sources
+* ⚡ Handle API responses
+* 🔄 Loading and error states
+* 📊 Present structured database results
+
+```text
+React.js
+    │
+    │ HTTP / REST API
+    ▼
+FastAPI
+```
+
+---
+
+# ⚡ Backend — FastAPI
+
+The backend is built using **FastAPI** and acts as the API layer between the React frontend and the Agentic RAG system.
+
+### Backend responsibilities
+
+* API endpoints
+* Request validation
+* Agent execution
+* LangGraph workflow execution
+* RAG pipeline execution
+* PostgreSQL interaction
+* Qdrant interaction
+* Response generation
+* Error handling
+
+```text
+React
+  ↓
+FastAPI
+  ↓
+LangGraph
+  ↓
+Agentic RAG
+```
+
+---
+
+# 🤖 Agentic AI Architecture
+
+The core intelligence of the application is implemented using **LangGraph**.
+
+The system does not use a fixed retrieval path for every question.
+
+Instead, an LLM-powered routing agent determines which tool should handle the query.
+
+### Available tools
+
+```text
+                    User Query
+                        │
+                        ▼
+                Query Analyzer
+                        │
+          ┌─────────────┼─────────────┐
+          │             │             │
+          ▼             ▼             ▼
+       RAG Tool      SQL Tool     Hybrid Tool
+```
+
+---
+
+# 🔀 Intelligent Query Routing
+
+## 1️⃣ RAG Route
+
+Used when the answer exists inside company documents or policies.
+
+### Example
 
 ```text
 What is the maximum hotel reimbursement per night?
 ```
 
-Flow:
+Pipeline:
 
 ```text
 User Query
-   ↓
+    ↓
 Query Rewriting
-   ↓
+    ↓
 Hybrid Retrieval
-   ↓
-Reranking
-   ↓
-Evidence
+    ↓
+Cross-Encoder Reranking
+    ↓
+Relevant Evidence
+    ↓
+LLM Answer
 ```
 
-### 2. SQL Route
+---
 
-Used when the answer requires structured PostgreSQL data.
+# 2️⃣ SQL Route
 
-Example:
+Used when structured information is required from PostgreSQL.
+
+### Example
 
 ```text
 How many employees are in Finance?
 ```
 
-Flow:
+Pipeline:
 
 ```text
 User Query
-   ↓
+    ↓
 SQL Generation
-   ↓
-Read-only SQL Validation
-   ↓
+    ↓
+SQL Validation
+    ↓
 PostgreSQL
-   ↓
+    ↓
 Database Results
-```
-
-### 3. Hybrid Route
-
-Used when both company policies and database information are required.
-
-Example:
-
-```text
-According to the leave policy, how many employees
-are eligible for 30 days of annual leave?
-```
-
-Flow:
-
-```text
-User Query
-       │
-       ├───────────────┐
-       ▼               ▼
- Document Retrieval   PostgreSQL
-       │               │
-       ▼               ▼
-   Reranking        SQL Results
-       │               │
-       └───────┬───────┘
-               ▼
-         Answer Generator
-               │
-               ▼
-            Verifier
-```
-
----
-
-## 🔍 Advanced RAG Pipeline
-
-The document retrieval pipeline uses:
-
-```text
-User Query
     ↓
-Query Rewriting
-    ↓
-Dense Retrieval ───────┐
-                       ├── Hybrid Retrieval
-BM25 Retrieval ────────┘
-    ↓
-Cross-Encoder Reranking
-    ↓
-Top Evidence
+LLM Answer
 ```
 
-### Dense Retrieval
-
-Uses Gemini embeddings with Qdrant.
-
-### Sparse Retrieval
-
-Uses BM25 to retrieve documents based on keyword relevance.
-
-### Hybrid Retrieval
-
-Combines dense and sparse retrieval:
-
-```python
-EnsembleRetriever(
-    retrievers=[dense_retriever, sparse_retriever],
-    weights=[0.5, 0.5]
-)
-```
-
-### Reranking
-
-Retrieved documents are reranked using:
-
-```text
-cross-encoder/ms-marco-MiniLM-L-6-v2
-```
-
----
-
-## 🗄️ Database Layer
-
-The system uses PostgreSQL for structured enterprise data.
-
-Example employee fields:
-
-```text
-id
-name
-department
-years_of_service
-salary
-join_date
-```
-
-The SQL tool generates SQL from natural-language questions and executes only read-oriented queries.
-
-The system rejects generated queries that do not begin with:
+The system allows only read-oriented SQL queries beginning with:
 
 ```text
 SELECT
 ```
 
-or
+or:
 
 ```text
 WITH
 ```
 
-This provides a basic read-only protection layer for the SQL tool.
+---
+
+# 3️⃣ Hybrid Route
+
+Used when both documents and structured database information are required.
+
+### Example
+
+```text
+According to the leave policy,
+how many employees are eligible for 30 days of annual leave?
+```
+
+Pipeline:
+
+```text
+                    User Query
+                         │
+              ┌──────────┴──────────┐
+              ▼                     ▼
+       Document Retrieval       PostgreSQL
+              │                     │
+              ▼                     ▼
+          Reranking             SQL Results
+              │                     │
+              └──────────┬──────────┘
+                         ▼
+                  Answer Generator
+                         │
+                         ▼
+                     Verifier
+                         │
+                         ▼
+                   Final Answer
+```
 
 ---
 
-## 🛡️ Answer Verification
+# 🔍 Advanced RAG Pipeline
 
-After generating an answer, a separate verification step checks the response against the retrieved evidence.
+The document retrieval system uses an advanced multi-stage RAG pipeline.
 
 ```text
-Evidence
-   ↓
+User Query
+     ↓
+Query Rewriting
+     ↓
+┌───────────────────────┐
+│   Hybrid Retrieval    │
+│                       │
+│ Dense + Sparse Search │
+└───────────┬───────────┘
+            ↓
+      Candidate Documents
+            ↓
+    Cross-Encoder Reranker
+            ↓
+       Top Documents
+            ↓
+         Evidence
+            ↓
+      Answer Generator
+```
+
+---
+
+# 🔎 Hybrid Search
+
+The project combines two retrieval strategies.
+
+### Dense Retrieval
+
+Uses:
+
+* Gemini Embeddings
+* Qdrant Vector Database
+
+```text
+Query
+  ↓
+Gemini Embedding
+  ↓
+Qdrant
+  ↓
+Semantic Matches
+```
+
+### Sparse Retrieval
+
+Uses:
+
+* BM25
+
+This helps retrieve documents based on exact keyword matches.
+
+### Combined Retrieval
+
+```python
+EnsembleRetriever(
+    retrievers=[
+        dense_retriever,
+        sparse_retriever
+    ],
+    weights=[0.5, 0.5]
+)
+```
+
+This combines semantic and keyword-based retrieval.
+
+---
+
+# 🎯 Cross-Encoder Reranking
+
+After hybrid retrieval, the retrieved documents are reranked using a Cross-Encoder.
+
+Model:
+
+```text
+cross-encoder/ms-marco-MiniLM-L-6-v2
+```
+
+Pipeline:
+
+```text
+Hybrid Retrieval
+       ↓
+Candidate Documents
+       ↓
+Cross Encoder
+       ↓
+Relevance Scores
+       ↓
+Top-K Documents
+```
+
+This reduces the possibility of passing irrelevant retrieved documents to the LLM.
+
+---
+
+# ✍️ Query Rewriting
+
+Before retrieval, the original user query is rewritten into a more retrieval-friendly form.
+
+```text
+Original Query
+      ↓
+LLM Query Rewriter
+      ↓
+Optimized Query
+      ↓
+Retriever
+```
+
+This improves retrieval for ambiguous or poorly formulated questions.
+
+---
+
+# 🗄️ PostgreSQL Integration
+
+PostgreSQL is used for structured enterprise information.
+
+Example employee table:
+
+```text
+employees
+├── id
+├── name
+├── department
+├── years_of_service
+├── salary
+└── join_date
+```
+
+Example query:
+
+```text
+How many employees are in Finance?
+```
+
+The system:
+
+```text
+Natural Language Question
+          ↓
+      SQL Generator
+          ↓
+      SQL Validation
+          ↓
+       PostgreSQL
+          ↓
+      Query Results
+```
+
+---
+
+# 🛡️ SQL Safety
+
+The generated SQL is validated before execution.
+
+Only read-only queries beginning with:
+
+```text
+SELECT
+```
+
+or:
+
+```text
+WITH
+```
+
+are allowed.
+
+Queries attempting to perform operations such as:
+
+```text
+INSERT
+UPDATE
+DELETE
+DROP
+ALTER
+TRUNCATE
+```
+
+are rejected by the application layer.
+
+---
+
+# 🧠 Answer Generation
+
+After the selected tool returns evidence, the answer generator produces the final response.
+
+The model is instructed to:
+
+* Use only retrieved evidence
+* Avoid hallucinating information
+* Answer the user's question directly
+* Mention relevant sources
+* Use PostgreSQL results when applicable
+* Combine document and database evidence for hybrid queries
+
+---
+
+# ✅ Answer Verification
+
+A separate verification stage checks the generated answer against the available evidence.
+
+```text
+Retrieved Evidence
+       ↓
 Answer Generator
-   ↓
+       ↓
 Draft Answer
-   ↓
+       ↓
 Verifier
-   ↓
+       ↓
 Final Answer
 ```
 
-The verifier is instructed to:
+The verifier:
 
-* Preserve supported claims
-* Remove unsupported claims
-* Avoid outside knowledge
-* Answer directly
-* Report insufficient evidence when necessary
-
----
-
-## 🛠️ Tech Stack
-
-| Category               | Technology                          |
-| ---------------------- | ----------------------------------- |
-| Language               | Python                              |
-| LLM                    | Google Gemini                       |
-| Agent Framework        | LangGraph                           |
-| LLM Framework          | LangChain                           |
-| Vector Database        | Qdrant                              |
-| Sparse Retrieval       | BM25                                |
-| Embeddings             | Gemini Embeddings                   |
-| Reranker               | Sentence Transformers Cross-Encoder |
-| Relational Database    | PostgreSQL                          |
-| API Backend            | FastAPI                             |
-| Frontend               | React *(planned)*                   |
-| Environment Management | python-dotenv                       |
-| Containerization       | Docker *(where applicable)*         |
+* Preserves supported claims
+* Removes unsupported claims
+* Does not introduce outside knowledge
+* Checks the answer against the evidence
+* Reports insufficient evidence when appropriate
 
 ---
 
-## 📁 Project Structure
+# 🏗️ Project Structure
 
 ```text
-enterprise-agentic-rag/
+Enterprise-Agentic-RAG-Knowledge-Intelligence-System/
 │
-├── app/
-│   ├── main.py
-│   ├── agents/
-│   │   └── graph.py
-│   ├── rag/
-│   │   ├── retriever.py
-│   │   ├── reranker.py
-│   │   └── embeddings.py
-│   ├── database/
-│   │   ├── postgres.py
-│   │   └── sql_tools.py
-│   └── tools/
-│       └── retrieval_tools.py
-│
-├── data/
-│   └── ...
+├── backend/
+│   │
+│   ├── app/
+│   │   ├── main.py
+│   │   │
+│   │   ├── agents/
+│   │   │   └── graph.py
+│   │   │
+│   │   ├── rag/
+│   │   │   ├── retriever.py
+│   │   │   ├── reranker.py
+│   │   │   └── embeddings.py
+│   │   │
+│   │   ├── database/
+│   │   │   ├── postgres.py
+│   │   │   └── sql_tools.py
+│   │   │
+│   │   └── tools/
+│   │       └── retrieval_tools.py
+│   │
+│   └── requirements.txt
 │
 ├── frontend/
+│   │
+│   ├── src/
+│   ├── public/
+│   ├── package.json
 │   └── ...
+│
+├── data/
 │
 ├── tests/
 │
 ├── .env.example
 ├── .gitignore
-├── requirements.txt
-└── README.md
+├── README.md
+└── docker-compose.yml
+```
+
+> The exact folder structure may evolve as additional frontend, backend, evaluation, and deployment components are added.
+
+---
+
+# 🛠️ Technology Stack
+
+## Frontend
+
+| Technology | Purpose                          |
+| ---------- | -------------------------------- |
+| React.js   | Frontend UI                      |
+| JavaScript | Frontend logic                   |
+| HTML/CSS   | UI structure and styling         |
+| REST API   | Frontend ↔ Backend communication |
+
+## Backend
+
+| Technology    | Purpose                      |
+| ------------- | ---------------------------- |
+| Python        | Core backend language        |
+| FastAPI       | REST API backend             |
+| LangGraph     | Agent workflow orchestration |
+| LangChain     | LLM and RAG framework        |
+| Google Gemini | LLM and embeddings           |
+
+## AI / RAG
+
+| Technology        | Purpose                |
+| ----------------- | ---------------------- |
+| Qdrant            | Vector database        |
+| Gemini Embeddings | Dense embeddings       |
+| BM25              | Sparse retrieval       |
+| EnsembleRetriever | Hybrid retrieval       |
+| Cross-Encoder     | Document reranking     |
+| Query Rewriting   | Retrieval optimization |
+
+## Database
+
+| Technology          | Purpose                    |
+| ------------------- | -------------------------- |
+| PostgreSQL          | Structured enterprise data |
+| SQLAlchemy          | Database connectivity      |
+| LangChain SQL tools | Natural language → SQL     |
+
+## Infrastructure
+
+| Technology | Purpose                |
+| ---------- | ---------------------- |
+| Docker     | Containerized services |
+| Qdrant     | Vector search service  |
+| PostgreSQL | Relational database    |
+
+---
+
+# ⚙️ Installation
+
+## 1. Clone the Repository
+
+```bash
+git clone https://github.com/AbhishekAbhi71/Enterprise-Agentic-RAG-Knowledge-Intelligence-System.git
+
+cd Enterprise-Agentic-RAG-Knowledge-Intelligence-System
 ```
 
 ---
 
-## ⚙️ Installation
+# 2. Backend Setup
 
-### 1. Clone the repository
+Navigate to the backend:
 
 ```bash
-git clone <YOUR_GITHUB_REPOSITORY_URL>
-cd enterprise-agentic-rag
+cd backend
 ```
 
-### 2. Create a virtual environment
+Create a virtual environment:
 
-Windows:
+### Windows
 
 ```powershell
 python -m venv myenv
@@ -354,50 +630,68 @@ Activate it:
 .\myenv\Scripts\Activate.ps1
 ```
 
-### 3. Install dependencies
+Install dependencies:
 
 ```powershell
 pip install -r requirements.txt
 ```
 
-### 4. Configure environment variables
+---
 
-Create a `.env` file:
+# 3. Environment Variables
+
+Create a `.env` file based on `.env.example`.
+
+Example:
 
 ```env
-GEMINI_API_KEY=your_api_key
-GOOGLE_API_KEY=your_api_key
+GEMINI_API_KEY=your_gemini_api_key
+GOOGLE_API_KEY=your_google_api_key
 
-POSTGRES_URL=your_postgresql_connection_string
+POSTGRES_URL=postgresql://username:password@localhost:5432/database_name
 
 QDRANT_URL=http://localhost:6333
 
 PDF_PATH=./data/employee_policy_handbook_complete.pdf
 ```
 
-Do not commit `.env` to GitHub.
+### ⚠️ Important
+
+Never commit your actual `.env` file.
+
+The repository only contains:
+
+```text
+.env.example
+```
+
+API keys, passwords, and private connection strings should remain in your local environment.
 
 ---
 
-## 🐳 Run Qdrant
+# 4. Start Qdrant
 
 Make sure Qdrant is running locally.
 
-Default configuration:
+Default URL:
 
 ```text
 http://localhost:6333
 ```
 
-The application creates/populates the required vector collection.
+Example Docker command:
+
+```bash
+docker run -p 6333:6333 qdrant/qdrant
+```
 
 ---
 
-## 🗄️ Configure PostgreSQL
+# 5. Configure PostgreSQL
 
 Create your PostgreSQL database and required tables.
 
-Then configure:
+Then configure the connection string:
 
 ```env
 POSTGRES_URL=your_postgresql_connection_string
@@ -405,48 +699,118 @@ POSTGRES_URL=your_postgresql_connection_string
 
 ---
 
-## ▶️ Run the Backend
+# 6. Start FastAPI Backend
 
-Start FastAPI with:
+From the backend directory:
 
-```powershell
+```bash
 uvicorn app.main:app --reload
 ```
 
-The API will be available locally.
-
-Once the React frontend is added, it can communicate with the FastAPI backend through the API endpoints.
+The FastAPI backend will start locally.
 
 ---
 
-## 🧪 Example Queries
+# 7. Start React Frontend
 
-### Document Query
+Navigate to the frontend directory:
+
+```bash
+cd frontend
+```
+
+Install dependencies:
+
+```bash
+npm install
+```
+
+Start the development server:
+
+```bash
+npm run dev
+```
+
+The React frontend will communicate with the FastAPI backend through REST APIs.
+
+---
+
+# 🔄 Complete Request Flow
+
+A typical request travels through the entire full-stack system:
+
+```text
+┌───────────────────────┐
+│      React UI         │
+│                       │
+│ User enters question │
+└───────────┬───────────┘
+            │
+            │ HTTP Request
+            ▼
+┌───────────────────────┐
+│    FastAPI Backend    │
+└───────────┬───────────┘
+            │
+            ▼
+┌───────────────────────┐
+│     LangGraph Agent   │
+│                       │
+│    Query Analyzer     │
+└───────────┬───────────┘
+            │
+     ┌──────┼──────┐
+     ▼      ▼      ▼
+    RAG    SQL   HYBRID
+     │      │      │
+     ▼      ▼      ▼
+  Qdrant PostgreSQL Both
+     │      │      │
+     └──────┼──────┘
+            ▼
+       Reranking
+            ↓
+     Answer Generator
+            ↓
+         Verifier
+            ↓
+       Final Answer
+            ↓
+       FastAPI Response
+            ↓
+        React UI
+```
+
+---
+
+# 🧪 Example Queries
+
+### 📄 Document Query
 
 ```text
 What is the maximum hotel reimbursement per night?
 ```
 
-### Database Query
+### 🗄️ Database Query
 
 ```text
 How many employees are in Finance?
 ```
 
-### Hybrid Query
+### 🔗 Hybrid Query
 
 ```text
-According to the leave policy, how many employees
-are eligible for 30 days of annual leave?
+According to the leave policy,
+how many employees are eligible for 30 days of annual leave?
 ```
 
-### Unknown Document Query
+### 📄 Another Document Query
 
 ```text
-What is the company's travel insurance provider?
+Who owns the Remote Work Policy?
 ```
 
-### Database Query
+### 🗄️ Database Query
 
 ```text
 How many employees joined in 2019?
@@ -454,58 +818,87 @@ How many employees joined in 2019?
 
 ---
 
-## 🔐 Security Notes
+# 🔐 Security Considerations
 
-Sensitive configuration should never be committed to the repository.
+Sensitive information should never be committed to GitHub.
 
-The following files should remain local:
+The following should remain private:
 
 ```text
 .env
+API Keys
+Database Passwords
+Private Connection Strings
+Private Documents
 ```
 
-API keys, database passwords, private connection strings, and other secrets must be stored in environment variables.
+The `.gitignore` file prevents sensitive local files from being committed.
 
 ---
 
-## 🚧 Future Improvements
+# 🚧 Future Enhancements
 
-* React-based ChatGPT-style frontend
-* Redis caching
-* Background ingestion jobs
-* RAG evaluation pipeline
-* Retrieval and answer-quality metrics
-* Authentication and authorization
-* Document-level access control
-* Streaming responses
-* Conversation memory
-* Docker Compose deployment
-* Production deployment
+* ⚛️ Enhanced React ChatGPT-style interface
+* 🔐 Authentication and authorization
+* 👥 Role-based document access
+* 📚 Multi-document ingestion
+* 📊 RAG evaluation framework
+* 📈 Retrieval evaluation metrics
+* 🧪 Automated evaluation dataset
+* ⚡ Redis caching
+* 🔄 Background document processing
+* 💬 Conversation memory
+* 📡 Streaming responses
+* 🐳 Complete Docker Compose deployment
+* ☁️ Cloud deployment
+* 📊 Observability and monitoring
 
 ---
 
-## 🎯 Project Goal
+# 🎯 What This Project Demonstrates
 
-The goal of this project is to demonstrate how an enterprise knowledge system can combine:
+This project demonstrates practical implementation of:
 
 ```text
-LLM
-+
-Agentic Workflows
-+
+Full-Stack Development
+        +
+Generative AI
+        +
+Agentic AI
+        +
 Advanced RAG
-+
-Vector Search
-+
-Keyword Search
-+
+        +
+Hybrid Search
+        +
 Reranking
-+
-SQL
-+
-Verification
-+
-API Backend
+        +
+Vector Databases
+        +
+SQL / PostgreSQL
+        +
+LLM Tool Calling
+        +
+LangGraph
+        +
+FastAPI
+        +
+React
 ```
 
-into a single intelligent knowledge system capable of answering questions across both unstructured enterprise documents and structured business data.
+The system connects a modern **React frontend** with a **FastAPI backend** and an **Agentic RAG intelligence layer**, allowing users to interact with enterprise knowledge through a natural-language interface.
+
+---
+
+# 👨‍💻 Author
+
+**Abhishek Kumar Abhi**
+
+GitHub:
+
+https://github.com/AbhishekAbhi71
+
+---
+
+# ⭐ If You Find This Project Interesting
+
+Feel free to explore the repository, raise issues, or contribute improvements.
