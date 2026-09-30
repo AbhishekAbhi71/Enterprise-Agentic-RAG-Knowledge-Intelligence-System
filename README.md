@@ -1,6 +1,6 @@
 # 🚀 Enterprise Agentic RAG Knowledge Intelligence System
 
-> **A full-stack AI-powered enterprise knowledge intelligence platform built with React.js and FastAPI, combining Agentic RAG, LangGraph, LangChain, Gemini, Qdrant, PostgreSQL, hybrid search, cross-encoder reranking, SQL reasoning, and answer verification.**
+> **A full-stack AI-powered enterprise knowledge intelligence platform built withHTML/CSS/JavaScript and FastAPI, combining Agentic RAG, LangGraph, LangChain, Gemini, Qdrant, PostgreSQL, hybrid search, cross-encoder reranking, SQL reasoning, and answer verification.**
 
 This project is designed as an **enterprise-style full-stack AI application** capable of answering questions from both **unstructured company documents** and **structured business databases**.
 
@@ -18,7 +18,8 @@ This project follows a modern **Frontend → API → Agent → Data Layer** arch
 
 ```text
                          ┌─────────────────────────┐
-                         │      React Frontend     │
+                         │      HTML/CSS/JavaScript
+                                     Frontend     │
                          │                         │
                          │  Chat Interface / UI    │
                          └────────────┬────────────┘
@@ -83,9 +84,9 @@ This project follows a modern **Frontend → API → Agent → Data Layer** arch
 
 # 🧩 Full-Stack Components
 
-## 🎨 Frontend — React.js
+## 🎨 Frontend — HTML/CSS/JavaScript
 
-The frontend is built using **React.js** and provides the user-facing interface for interacting with the AI knowledge system.
+The frontend is built using *HTML/CSS/JavaScripts** and provides the user-facing interface for interacting with the AI knowledge system.
 
 The React frontend communicates with the backend through REST APIs exposed by FastAPI.
 
@@ -100,7 +101,7 @@ The React frontend communicates with the backend through REST APIs exposed by Fa
 * 📊 Present structured database results
 
 ```text
-React.js
+HTML/CSS/JavaScript
     │
     │ HTTP / REST API
     ▼
